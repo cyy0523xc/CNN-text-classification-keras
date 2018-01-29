@@ -36,7 +36,7 @@ def train(checkpoint, epoch):
         num_filters = 512
         drop = 0.5
 
-        epochs = 100
+        epochs = 50
         batch_size = 500 # initial 30
         
         if checkpoint:

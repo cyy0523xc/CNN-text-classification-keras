@@ -2,27 +2,32 @@ import numpy as np
 import re
 import itertools
 from collections import Counter
+from normalizer import Normalizer
+from tqdm import tqdm
 
 
-def clean_str(string):
-    """
-    Tokenization/string cleaning for datasets.
-    Original taken from https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py
-    """
-    string = re.sub(r"[^A-Za-z0-9(),!?\'\`]", " ", string)
-    string = re.sub(r"\'s", " \'s", string)
-    string = re.sub(r"\'ve", " \'ve", string)
-    string = re.sub(r"n\'t", " n\'t", string)
-    string = re.sub(r"\'re", " \'re", string)
-    string = re.sub(r"\'d", " \'d", string)
-    string = re.sub(r"\'ll", " \'ll", string)
-    string = re.sub(r",", " , ", string)
-    string = re.sub(r"!", " ! ", string)
-    string = re.sub(r"\(", " \( ", string)
-    string = re.sub(r"\)", " \) ", string)
-    string = re.sub(r"\?", " \? ", string)
-    string = re.sub(r"\s{2,}", " ", string)
-    return string.strip().lower()
+MAX_LENGTH = 120  # words
+normalizer = Normalizer()
+
+# def clean_str(string):
+#     """
+#     Tokenization/string cleaning for datasets.
+#     Original taken from https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py
+#     """
+#     string = re.sub(r"[^A-Za-z0-9(),!?\'\`]", " ", string)
+#     string = re.sub(r"\'s", " \'s", string)
+#     string = re.sub(r"\'ve", " \'ve", string)
+#     string = re.sub(r"n\'t", " n\'t", string)
+#     string = re.sub(r"\'re", " \'re", string)
+#     string = re.sub(r"\'d", " \'d", string)
+#     string = re.sub(r"\'ll", " \'ll", string)
+#     string = re.sub(r",", " , ", string)
+#     string = re.sub(r"!", " ! ", string)
+#     string = re.sub(r"\(", " \( ", string)
+#     string = re.sub(r"\)", " \) ", string)
+#     string = re.sub(r"\?", " \? ", string)
+#     string = re.sub(r"\s{2,}", " ", string)
+#     return string.strip().lower()
 
 
 def load_data_and_labels():
@@ -31,13 +36,13 @@ def load_data_and_labels():
     Returns split sentences and labels.
     """
     # Load data from files
-    positive_examples = list(open("./data/rt-polarity.pos", "r", encoding='latin-1').readlines())
+    positive_examples = list(open("./data/comments_good_norm.txt", "r", encoding='utf-8').readlines())
     positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open("./data/rt-polarity.neg", "r", encoding='latin-1').readlines())
+    negative_examples = list(open("./data/comments_bad_norm.txt", "r", encoding='utf-8').readlines())
     negative_examples = [s.strip() for s in negative_examples]
     # Split by words
     x_text = positive_examples + negative_examples
-    x_text = [clean_str(sent) for sent in x_text]
+    x_text = [normalizer.normalize(sent) for sent in tqdm(x_text, total=len(x_text))]
     x_text = [s.split(" ") for s in x_text]
     # Generate labels
     positive_labels = [[0, 1] for _ in positive_examples]
@@ -51,12 +56,18 @@ def pad_sentences(sentences, padding_word="<PAD/>"):
     Pads all sentences to the same length. The length is defined by the longest sentence.
     Returns padded sentences.
     """
-    sequence_length = max(len(x) for x in sentences)
+    # sequence_length = max(len(x) for x in sentences)
+    sequence_length = MAX_LENGTH
     padded_sentences = []
     for i in range(len(sentences)):
         sentence = sentences[i]
-        num_padding = sequence_length - len(sentence)
-        new_sentence = sentence + [padding_word] * num_padding
+
+        if len(sentence) > MAX_LENGTH:
+            new_sentence = sentence[:MAX_LENGTH]
+        else:
+            num_padding = sequence_length - len(sentence)
+            new_sentence = sentence + [padding_word] * num_padding
+
         padded_sentences.append(new_sentence)
     return padded_sentences
 

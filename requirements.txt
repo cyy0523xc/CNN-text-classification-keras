@@ -19,3 +19,7 @@ tensorboard==1.0.0a6
 tensorflow==1.5.0
 tensorflow-tensorboard==1.5.0
 Werkzeug==0.14.1
+pymorphy2[fast]
+pymorphy2-dicts-ru
+pymorphy2-dicts-uk
+tqdm
