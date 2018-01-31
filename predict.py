@@ -15,11 +15,6 @@ def predict(model_file, data_file):
     click.echo(click.style("Loading data, building vocabulary...", fg="yellow"))
     x, y, vocabulary, vocabulary_inv = load_data(normalize=False)
     pad_token = vocabulary['<PAD/>']
-    
-    with open('vocab.json','w') as f:
-        f.write(json.dumps(vocabulary))
-    raise Exception('end')
-
 
     click.echo(click.style("Loading model...", fg="yellow"))
     model = load_model(model_file)
