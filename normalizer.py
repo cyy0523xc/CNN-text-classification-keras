@@ -11,7 +11,8 @@ class Normalizer(object):
         self.min_word_length = min_word_length
         self.morphper = pymorphy2.MorphAnalyzer()
         self.translator = str.maketrans(space_chars, ' '*len(space_chars), strip_chars)
-        
+    
+    # Может вернуть пустую строку    
     def normalize(self, sentense):
         sentense = sentense.translate(self.translator)  # remove punctuation, replace tabs & newlines with space
         sentense = ' '.join(sentense.split())  # remove extra spaces
@@ -20,4 +21,4 @@ class Normalizer(object):
             self.morphper.parse(word)[0].normal_form for word in words 
             if len(word) >= self.min_word_length
         ]
-        return ' '.join(norm_words).strip().lower()
+        return ' '.join(norm_words).strip('\n\r ').lower()

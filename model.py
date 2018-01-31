@@ -8,13 +8,19 @@ from sklearn.model_selection import train_test_split
 from data_helpers import load_data
 
 
+# loss падает, но value_loss растёт - переобучение
+# - увеличить dropout http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf
+# - перемешать семплы (в validation dataset попали только плохие или только хорошие комменты)
+# - обучить на большем количестве семплов
+
+
 @click.command()
 @click.option('--checkpoint', default=None, help='Continue training from checkpoint.')
 @click.option('--epoch', default=0, help='Initial epoch number.')
 def train(checkpoint, epoch):
     try:
         click.echo(click.style('Loading data...', fg='green'))
-        x, y, vocabulary, vocabulary_inv = load_data()
+        x, y, vocabulary, vocabulary_inv = load_data(normalize=False)  # assume files already normalized
 
         # x.shape -> (10662, 56)
         # y.shape -> (10662, 2)
@@ -36,8 +42,8 @@ def train(checkpoint, epoch):
         num_filters = 512
         drop = 0.5
 
-        epochs = 50
-        batch_size = 500 # initial 30
+        epochs = 20
+        batch_size = 32 # initial 30
         
         if checkpoint:
             click.echo(click.style('Loading model %s...' % checkpoint, fg='green'))

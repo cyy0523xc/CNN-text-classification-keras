@@ -6,7 +6,7 @@ from normalizer import Normalizer
 from tqdm import tqdm
 
 
-MAX_LENGTH = 120  # words
+MAX_LENGTH = 150  # words
 normalizer = Normalizer()
 
 # def clean_str(string):
@@ -30,19 +30,20 @@ normalizer = Normalizer()
 #     return string.strip().lower()
 
 
-def load_data_and_labels():
+def load_data_and_labels(normalize):
     """
     Loads polarity data from files, splits the data into words and generates labels.
     Returns split sentences and labels.
     """
     # Load data from files
-    positive_examples = list(open("./data/comments_good_norm.txt", "r", encoding='utf-8').readlines())
+    positive_examples = list(open("./data/normalized_positive.txt", "r", encoding='utf-8').readlines())
     positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open("./data/comments_bad_norm.txt", "r", encoding='utf-8').readlines())
+    negative_examples = list(open("./data/normalized_negative.txt", "r", encoding='utf-8').readlines())
     negative_examples = [s.strip() for s in negative_examples]
     # Split by words
     x_text = positive_examples + negative_examples
-    x_text = [normalizer.normalize(sent) for sent in tqdm(x_text, total=len(x_text))]
+    if normalize:
+        x_text = [normalizer.normalize(sent) for sent in tqdm(x_text, total=len(x_text))]
     x_text = [s.split(" ") for s in x_text]
     # Generate labels
     positive_labels = [[0, 1] for _ in positive_examples]
@@ -96,13 +97,13 @@ def build_input_data(sentences, labels, vocabulary):
     return [x, y]
 
 
-def load_data():
+def load_data(normalize=False):
     """
     Loads and preprocessed data for the dataset.
     Returns input vectors, labels, vocabulary, and inverse vocabulary.
     """
     # Load and preprocess data
-    sentences, labels = load_data_and_labels()
+    sentences, labels = load_data_and_labels(normalize)
     sentences_padded = pad_sentences(sentences)
     vocabulary, vocabulary_inv = build_vocab(sentences_padded)
     x, y = build_input_data(sentences_padded, labels, vocabulary)
