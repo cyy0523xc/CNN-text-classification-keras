@@ -4,6 +4,7 @@ import itertools
 from collections import Counter
 from normalizer import Normalizer
 from tqdm import tqdm
+import json
 
 
 MAX_LENGTH = 150  # words
@@ -36,9 +37,9 @@ def load_data_and_labels(normalize):
     Returns split sentences and labels.
     """
     # Load data from files
-    positive_examples = list(open("./data/normalized_positive.txt", "r", encoding='utf-8').readlines())
+    positive_examples = list(open("./data/normalized_uniform_positive.txt", "r", encoding='utf-8').readlines())
     positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open("./data/normalized_negative.txt", "r", encoding='utf-8').readlines())
+    negative_examples = list(open("./data/normalized_uniform_negative.txt", "r", encoding='utf-8').readlines())
     negative_examples = [s.strip() for s in negative_examples]
     # Split by words
     x_text = positive_examples + negative_examples
@@ -105,6 +106,6 @@ def load_data(normalize=False):
     # Load and preprocess data
     sentences, labels = load_data_and_labels(normalize)
     sentences_padded = pad_sentences(sentences)
-    vocabulary, vocabulary_inv = build_vocab(sentences_padded)
+    vocabulary, vocabulary_inv = build_vocab(sentences_padded)    
     x, y = build_input_data(sentences_padded, labels, vocabulary)
     return [x, y, vocabulary, vocabulary_inv]

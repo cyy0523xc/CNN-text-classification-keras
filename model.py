@@ -2,7 +2,7 @@ import click
 from keras.layers import Input, Dense, Embedding, Conv2D, MaxPool2D
 from keras.layers import Reshape, Flatten, Dropout, Concatenate
 from keras.callbacks import ModelCheckpoint, TensorBoard
-from keras.optimizers import Adam
+from keras.optimizers import Adam, SGD
 from keras.models import Model, load_model
 from sklearn.model_selection import train_test_split
 from data_helpers import load_data
@@ -20,20 +20,18 @@ from data_helpers import load_data
 def train(checkpoint, epoch):
     try:
         click.echo(click.style('Loading data...', fg='green'))
-        x, y, vocabulary, vocabulary_inv = load_data(normalize=False)  # assume files already normalized
+        
+        normalize = False
 
-        # x.shape -> (10662, 56)
-        # y.shape -> (10662, 2)
-        # len(vocabulary) -> 18765
-        # len(vocabulary_inv) -> 18765
+        if not normalize:
+            click.echo(click.style('Will not normalize data (assumed input files already normalized)', fg='yellow'))
 
+        x, y, vocabulary, vocabulary_inv = load_data(normalize=normalize)
+
+        # with open('v.json', 'w', encoding='utf-8') as f:
+        #     f.write(json.dumps(vocabulary, indent=4, sort_keys=True, ensure_ascii=False))
+        
         X_train, X_test, y_train, y_test = train_test_split( x, y, test_size=0.2, random_state=42)
-
-        # X_train.shape -> (8529, 56)
-        # y_train.shape -> (8529, 2)
-        # X_test.shape -> (2133, 56)
-        # y_test.shape -> (2133, 2)
-
 
         sequence_length = x.shape[1] # 56
         vocabulary_size = len(vocabulary_inv) # 18765
@@ -73,6 +71,9 @@ def train(checkpoint, epoch):
             adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
             model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
 
+            #sgd = SGD(lr=0.2) # , decay=1e-6, momentum=0.9, nesterov=True
+            #model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy'])
+
         # tensorboard callback
         cb_tensorboard = TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
         cb_checkpoint = ModelCheckpoint('./checkpoints/model.epoch.{epoch:03d}.vacc{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_weights_only=False, save_best_only=True, mode='auto')
@@ -89,3 +90,8 @@ def train(checkpoint, epoch):
 if __name__ == '__main__':
     train()
 
+
+
+# The softmax activation makes sure the sum of the outputs is 1. It's useful for assuring that only one class among many classes will be output.
+# Since you have only 1 output (only one class), it's certainly a bad idea. You're probably ending up with 1 as result for all samples.
+# Use sigmoid instead. It goes well with binary_crossentropy.
