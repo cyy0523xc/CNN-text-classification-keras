@@ -37,9 +37,9 @@ def load_data_and_labels(normalize):
     Returns split sentences and labels.
     """
     # Load data from files
-    positive_examples = list(open("./data/normalized_uniform_positive.txt", "r", encoding='utf-8').readlines())
+    positive_examples = list(open("./data/as_is/normalized_positive.txt", "r", encoding='utf-8').readlines())
     positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open("./data/normalized_uniform_negative.txt", "r", encoding='utf-8').readlines())
+    negative_examples = list(open("./data/as_is/normalized_negative.txt", "r", encoding='utf-8').readlines())
     negative_examples = [s.strip() for s in negative_examples]
     # Split by words
     x_text = positive_examples + negative_examples

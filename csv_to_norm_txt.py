@@ -32,13 +32,13 @@ if __name__ == '__main__':
     ]
 
     file_csv = './data/splitter_restore_mdr_comments.csv'
-    file_pos = './data/normalized_uniform_positive.txt'
-    file_neg = './data/normalized_uniform_negative.txt'
+    file_pos = './data/as_is/normalized_positive.txt'
+    file_neg = './data/as_is/normalized_negative.txt'
     normalizer = Normalizer()
     count_neg, count_pos = 0, 0
 
     with open(file_neg, 'w', encoding='utf-8') as nf, open(file_pos, 'w', encoding='utf-8') as pf:
-        num_lines = 50000 #get_total_lines(file_csv)
+        num_lines = 100000 #get_total_lines(file_csv)
         for row in tqdm(get_row(file_csv), total=num_lines):
 
             try:
