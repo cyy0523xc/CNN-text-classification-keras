@@ -9,12 +9,18 @@ from data_helpers import load_data
 
 
 @click.command()
+@click.option('--neg-file', help='负面情感语料文件')
+@click.option('--pos-file', help='正面情感语料文件')
 @click.option('--checkpoint', default=None, help='Continue training from checkpoint.')
-@click.option('--epoch', default=0, help='Initial epoch number.')
-def train(checkpoint, epoch):
+@click.option('--epoch', default=20, help='Initial epoch number.')
+def train(neg_file, pos_file, checkpoint, epoch):
+    """
+    Examples:
+        python3 model.py --neg-file=/var/www/src/github.com/nlp/ChineseNlpCorpus/format_datasets/total_train_neg.txt --pos=/var/www/src/github.com/nlp/ChineseNlpCorpus/format_datasets/total_train_pos.txt
+    """
     try:
         click.echo(click.style('Loading data...', fg='green'))
-        x, y, vocabulary, vocabulary_inv = load_data()
+        x, y, vocabulary, vocabulary_inv = load_data(pos_file, neg_file)
 
         # x.shape -> (10662, 56)
         # y.shape -> (10662, 2)
@@ -38,7 +44,7 @@ def train(checkpoint, epoch):
 
         epochs = 100
         batch_size = 500 # initial 30
-        
+
         if checkpoint:
             click.echo(click.style('Loading model %s...' % checkpoint, fg='green'))
             model = load_model(checkpoint)
@@ -70,16 +76,15 @@ def train(checkpoint, epoch):
         # tensorboard callback
         cb_tensorboard = TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
         cb_checkpoint = ModelCheckpoint('./checkpoints/model.epoch.{epoch:03d}.vacc{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_weights_only=False, save_best_only=True, mode='auto')
-        
+
         click.echo(click.style('Traning model...', fg='green'))
 
         model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, initial_epoch=epoch,
             verbose=1, callbacks=[cb_checkpoint, cb_tensorboard], validation_data=(X_test, y_test)
         )
     except Exception as e:
-        click.echo(click.style(repr(e), fg='red'))        
+        click.echo(click.style(repr(e), fg='red'))
 
 
 if __name__ == '__main__':
     train()
-
