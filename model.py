@@ -21,13 +21,14 @@ def train(neg_file, pos_file, checkpoint, epoch):
     try:
         click.echo(click.style('Loading data...', fg='green'))
         x, y, vocabulary, vocabulary_inv = load_data(pos_file, neg_file)
+        click.echo(click.style('Loading data over.', fg='green'))
 
         # x.shape -> (10662, 56)
         # y.shape -> (10662, 2)
         # len(vocabulary) -> 18765
         # len(vocabulary_inv) -> 18765
 
-        X_train, X_test, y_train, y_test = train_test_split( x, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
         # X_train.shape -> (8529, 56)
         # y_train.shape -> (8529, 2)
