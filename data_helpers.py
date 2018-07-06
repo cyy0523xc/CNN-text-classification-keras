@@ -1,5 +1,6 @@
 import numpy as np
 import re
+import jieba
 import itertools
 from collections import Counter
 
@@ -42,7 +43,7 @@ def load_data_and_labels(pos_file, neg_file):
     # Split by words
     x_text = positive_examples + negative_examples
     #x_text = [clean_str(sent) for sent in x_text]
-    x_text = [s.split(" ") for s in x_text]
+    x_text = [jieba.lcut(s) for s in x_text]
     # Generate labels
     #positive_labels = [[0, 1] for _ in positive_examples]
     #negative_labels = [[1, 0] for _ in negative_examples]

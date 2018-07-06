@@ -75,7 +75,8 @@ def train(neg_file, pos_file, checkpoint, epoch):
 
     # tensorboard callback
     cb_tensorboard = TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
-    cb_checkpoint = ModelCheckpoint('./checkpoints/model.epoch.{epoch:03d}.vacc{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_weights_only=False, save_best_only=True, mode='auto')
+    cb_checkpoint = ModelCheckpoint('./checkpoints/model.epoch.{epoch:03d}.vacc{val_acc:.4f}.hdf5',
+                                    monitor='val_acc', verbose=1, save_weights_only=False, save_best_only=True, mode='auto')
 
     click.echo(click.style('Traning model...', fg='green'))
 
