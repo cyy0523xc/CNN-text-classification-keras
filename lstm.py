@@ -40,10 +40,10 @@ def load_data_and_labels(pos_file, neg_file, train_rate=0.8):
     train_x2 = negative_examples
     train_y2 = [0] * len(train_x2)
     train_len = int(len(train_x2)*train_rate)
-    test_x += train_x2[train_len:]
-    test_y += train_y2[train_len:]
     train_x += train_x2[:train_len]
     train_y += train_y2[:train_len]
+    test_x += train_x2[train_len:]
+    test_y += train_y2[train_len:]
 
     train_x = [jieba.lcut(s) for s in train_x]
     test_x = [jieba.lcut(s) for s in test_x]

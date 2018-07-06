@@ -1,4 +1,0 @@
-click
-Keras
-numpy
-scikit-learn
