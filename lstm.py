@@ -7,6 +7,7 @@ import numpy as np
 np.random.seed(1337)  # for reproducibility
 
 import jieba
+from fire import Fire
 from keras.preprocessing import sequence
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Embedding
@@ -103,5 +104,4 @@ def train(pos_file, neg_file, train_rate=0.8, epoch=20, batch_size=32,
 
 
 if __name__ == '__main__':
-    from fire import Fire
     Fire(train)
