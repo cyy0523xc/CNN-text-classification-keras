@@ -50,4 +50,4 @@ if __name__ == '__main__':
     predict()
 
 # python predict.py weights.003-0.6235.hdf5 test_data.txt
-# python predict.py weights.040-0.7604.hdf5 test_data.txt    
+# python predict.py weights.040-0.7604.hdf5 test_data.txt
