@@ -31,9 +31,13 @@ def load_data_and_labels(pos_file, neg_file):
     Returns split sentences and labels.
     """
     # Load data from files
-    positive_examples = list(open(pos_file, "r", encoding='utf8').readlines())
+    with open(pos_file, encoding='utf8') as r:
+        positive_examples = list(r.readlines())
+
+    with open(neg_file, encoding='utf8') as r:
+        negative_examples = list(r.readlines())
+
     positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open(neg_file, "r", encoding='utf8').readlines())
     negative_examples = [s.strip() for s in negative_examples]
     # Split by words
     x_text = positive_examples + negative_examples
