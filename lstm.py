@@ -63,7 +63,7 @@ def train(pos_file, neg_file, train_rate=0.8, epoch=20, batch_size=32,
     """
     # 载入数据
     print('Loading data...')
-    X_train, y_train, X_test, y_test = load_data_and_labels()
+    X_train, y_train, X_test, y_test = load_data_and_labels(pos_file, neg_file, train_rate)
     print(len(X_train), 'train sequences')
     print(len(X_test), 'test sequences')
 
