@@ -17,7 +17,7 @@ def predict(model_file, data_file, neg_file, pos_file):
     python predict.py weights.040-0.7604.hdf5 test_data.txt
     """
     click.echo(click.style("Loading data...", fg="yellow"))
-    x, y, vocabulary, vocabulary_inv = load_data()
+    x, y, vocabulary, vocabulary_inv = load_data(pos_file, neg_file)
     pad_token = vocabulary['<PAD/>']
 
     click.echo(click.style("Loading model...", fg="yellow"))
