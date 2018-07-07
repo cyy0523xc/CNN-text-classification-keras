@@ -2,14 +2,20 @@ import click
 import jieba
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import load_model
-from data_helpers import load_data, clean_str
+from data_helpers import load_data
+#from data_helpers import clean_str
 
 
 @click.command()
-@click.argument('model_file', type=click.Path(exists=True))
-@click.argument('data_file', type=click.Path(exists=True))
-def predict(model_file, data_file):
-
+@click.argument('model-file', type=click.Path(exists=True))
+@click.argument('data-file', type=click.Path(exists=True))
+@click.argument('neg-file', type=str)
+@click.argument('pos-file', type=str)
+def predict(model_file, data_file, neg_file, pos_file):
+    """
+    python predict.py weights.003-0.6235.hdf5 test_data.txt
+    python predict.py weights.040-0.7604.hdf5 test_data.txt
+    """
     click.echo(click.style("Loading data...", fg="yellow"))
     x, y, vocabulary, vocabulary_inv = load_data()
     pad_token = vocabulary['<PAD/>']
@@ -48,6 +54,3 @@ def predict(model_file, data_file):
 
 if __name__ == '__main__':
     predict()
-
-# python predict.py weights.003-0.6235.hdf5 test_data.txt
-# python predict.py weights.040-0.7604.hdf5 test_data.txt
