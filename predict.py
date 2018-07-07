@@ -7,11 +7,11 @@ from data_helpers import load_data
 
 
 @click.command()
-@click.argument('model-file', type=click.Path(exists=True))
-@click.argument('data-file', type=click.Path(exists=True))
-@click.argument('neg-file', type=str)
-@click.argument('pos-file', type=str)
-def predict(model_file, data_file, neg_file, pos_file):
+@click.option('--checkpoint', default=None, help='Continue training from checkpoint.')
+@click.option('--data-file', type=click.Path(exists=True))
+@click.option('--neg-file', type=str)
+@click.option('--pos-file', type=str)
+def predict(checkpoint, data_file, neg_file, pos_file):
     """
     python predict.py weights.003-0.6235.hdf5 test_data.txt
     python predict.py weights.040-0.7604.hdf5 test_data.txt
@@ -21,7 +21,7 @@ def predict(model_file, data_file, neg_file, pos_file):
     pad_token = vocabulary['<PAD/>']
 
     click.echo(click.style("Loading model...", fg="yellow"))
-    model = load_model(model_file)
+    model = load_model(checkpoint)
 
     samples = list(open(data_file, encoding='utf8').readlines())
 
